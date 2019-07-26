@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExemplosDelegate
 {
@@ -8,19 +9,21 @@ namespace ExemplosDelegate
     {
 
         /*
-         *  Delegates Action tem um unico parametro e não retorna valor;
-         *  Delegates Pedicate testa uma condição e retorna booleano;
-         * 
-         * 
+         *  Delegates Action<> tem um unico parametro e não retorna valor;
+         *  
+         *  Delegates Pedicate<> testa uma condição e retorna booleano;
+         *  
+         *  Delegates Func<in T, out TResult> tem um parametro( T ) e retorna um valor do tipo especificado( TResult );
+         *   
          */
         static List<Cliente> clientes = new List<Cliente>()
             {
-                new Cliente(){ ID = 1, Nome="Willian"},
-                new Cliente(){ ID = 2, Nome="Aline"},
-                new Cliente(){ ID = 3, Nome="Bruna"},
-                new Cliente(){ ID = 4, Nome="Wesley"},
-                new Cliente(){ ID = 5, Nome="Leny"},
-                new Cliente(){ ID = 5, Nome="Mariana"},
+                new Cliente(){ ID = 1, Nome="Willian", Idade = 32},
+                new Cliente(){ ID = 2, Nome="Aline", Idade = 31},
+                new Cliente(){ ID = 3, Nome="Bruna", Idade = 31},
+                new Cliente(){ ID = 4, Nome="Wesley", Idade = 30},
+                new Cliente(){ ID = 5, Nome="Leny", Idade = 25},
+                new Cliente(){ ID = 6, Nome="Mariana", Idade = 28},
             };
 
         static Action<Cliente> mostrarAction = new Action<Cliente>(Mostrar);
@@ -28,6 +31,9 @@ namespace ExemplosDelegate
 
         static Predicate<Cliente> containsPredicate = new Predicate<Cliente>(Contains);
         static Predicate<Cliente> containsPredicateLambda = new Predicate<Cliente>(c => c.Nome.Contains("ru"));
+
+        static Func<Cliente, Cliente> filtroFunc = new Func<Cliente, Cliente>(FiltroIdade);
+        static Func<Cliente, bool> filtroFuncLambda = new Func<Cliente, bool>(c => c.Idade < 30);
 
         static void Main(string[] args)
         {
@@ -39,7 +45,10 @@ namespace ExemplosDelegate
 
             //DelegatesPredicate_Foreach_Basico();
             //DelegatesPredicate_Foreach_Metodo();
-            DelegatesPredicate_Foreach_Lambda();
+            //DelegatesPredicate_Foreach_Lambda();
+            //DelegatesFunc_Foreach_Basico();
+            //DelegatesFunc_Foreach_Metodo();
+            DelegatesFunc_Foreach_Lambda();
         }
 
         /*                         Métodos Auxiliares - Início                         */
@@ -55,6 +64,17 @@ namespace ExemplosDelegate
         static bool Contains(Cliente cliente)
         {
             return cliente.Nome.Contains("ll");
+        }
+        static Cliente FiltroIdade(Cliente cliente)
+        {
+            if (cliente != null && cliente.Idade > 30)
+            {
+                return cliente;
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
@@ -149,6 +169,30 @@ namespace ExemplosDelegate
             foreach (var item in lista)
             {
                 Console.WriteLine(item.Nome);
+            }
+            Console.ReadKey();
+        }
+        static void DelegatesFunc_Foreach_Basico()
+        {
+            foreach (Cliente cliente in clientes)
+            {
+                FiltroIdade(cliente);
+            }
+            Console.ReadKey();
+        }
+        static void DelegatesFunc_Foreach_Metodo()
+        {
+            foreach (var cliente in clientes.Select(filtroFunc))
+            {
+                Console.WriteLine(cliente);
+            }
+            Console.ReadKey();
+        }
+        static void DelegatesFunc_Foreach_Lambda()
+        {
+            foreach (var cliente in clientes.Where(filtroFuncLambda))
+            {
+                Console.WriteLine(cliente);
             }
             Console.ReadKey();
         }

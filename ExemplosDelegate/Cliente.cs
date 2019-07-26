@@ -8,6 +8,11 @@ namespace ExemplosDelegate
     {
         public int ID { get; set; }
         public string  Nome { get; set; }
+        public int  Idade { get; set; }
 
+        public override string ToString()
+        {
+            return string.Format("Cliente de ID: {0} e Nome: {1}", ID, Nome);
+        }
     }
 }
